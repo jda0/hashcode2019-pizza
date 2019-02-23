@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,19 +59,17 @@ public class Main {
 		
 		// Get the possible slice sizes in order of size
 		System.out.println("Finding possible pizza slice sizes...");
-		List<Pair> pairs = new ArrayList<>();
+		ConcurrentLinkedQueue<Pair> pairs = new ConcurrentLinkedQueue<>();
 		for (int w = 1; w < pizza.max_cell; w++) {
-			for (int h = 1; h < pizza.max_cell; h++) {
-				if (w * h > pizza.max_cell) break;
-				
+			for (int h = (pizza.max_cell / w); h >= 1; h--) {
 				pairs.add(new Pair(w, h));
 			}
 		}
-		Collections.sort(pairs, (p1, p2) -> p2.w * p2.h - p1.w * p1.h);
+// 		Collections.sort(pairs, (p1, p2) -> p2.w * p2.h - p1.w * p1.h);
 
 		// Find where each slice size can be cut in pizza, starting with largest
 		System.out.println("Locating pizza slices...");
-		List<String> results = new ArrayList<>();
+		ConcurrentLinkedQueue<String> results = new ConcurrentLinkedQueue<>();
 		long start = System.currentTimeMillis();
 
 		pairs.forEach((pair) -> {
